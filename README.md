@@ -1,5 +1,6 @@
 # Recipe-Finder
-Clone the repository
+Clone the repository ( git clone https://github.com/Paul-Nathan/Recipe-Finder.git 
+cd Recipe-Finder )
 # Contributing
 To contribute, follow these steps;
 1. Fork the repository
