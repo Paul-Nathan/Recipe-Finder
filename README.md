@@ -8,3 +8,5 @@ To contribute, follow these steps;
 3. Make your changes and commit them
 4. Push to the branch
 5. Open a pull request.
+# Template Workflow
+https://docs.google.com/spreadsheets/d/1lAJ4DnThL5S73hhi55w4MmmyYTpG_R-M1wUxfgLXQBE/edit#gid=0
