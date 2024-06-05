@@ -1,0 +1,117 @@
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from PIL import Image, ImageTk
+
+# Mock Database
+users_db = {}
+recipes_db = [
+    {
+        "name": "Jollof Rice",
+        "ingredients": ["rice", "tomatoes", "onions", "pepper", "oil"],
+        "instructions": "1. Cook rice. 2. Prepare sauce with tomatoes, onions, and pepper. 3. Mix and cook together.",
+        "cuisine": "West African",
+        "cooking_time": 45,
+        "dietary_restrictions": [],
+        "popularity": 5,
+        "image_path": "jollof_rice.jpg"  # Image file path
+    },
+    {
+        "name": "Ugali",
+        "ingredients": ["maize flour", "water"],
+        "instructions": "1. Boil water. 2. Add maize flour and stir until thick.",
+        "cuisine": "East African",
+        "cooking_time": 20,
+        "dietary_restrictions": ["gluten-free"],
+        "popularity": 4,
+        "image_path": "ugali.jpg"  # Image file path
+    },
+    # Add more recipes here
+]
+
+# Additional recipes
+additional_recipes = [
+    {
+        "name": "Chakalaka",
+        "ingredients": ["canned baked beans", "onions", "tomatoes", "bell peppers", "chili peppers", "curry powder"],
+        "instructions": "1. Saute onions, bell peppers, and chili peppers. 2. Add tomatoes and curry powder. 3. Stir in baked beans.",
+        "cuisine": "South African",
+        "cooking_time": 30,
+        "dietary_restrictions": [],
+        "popularity": 3,
+        "image_path": "chakalaka.jpg"  # Image file path
+    },
+    # Add more additional recipes here
+]
+
+# Add additional recipes to recipes_db
+recipes_db.extend(additional_recipes)
+
+# User Registration and Authentication
+# Ingredient Input
+# Recipe Search and Display
+# Filter and Sort
+# Recipe Details
+
+# GUI Interface
+class RecipeFinderApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("African Recipe Finder")
+        self.root.geometry("600x400")
+        
+        # Background Image
+        background_image = Image.open("background.jpg")  # Background image file path
+        background_image = background_image.resize((600, 400), Image.ANTIALIAS)
+        self.background_photo = ImageTk.PhotoImage(background_image)
+        self.background_label = tk.Label(root, image=self.background_photo)
+        self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
+        
+        # Register Button
+        self.register_button = tk.Button(root, text="Register", font=("Arial", 12), command=self.register)
+        self.register_button.place(relx=0.5, rely=0.4, anchor="center")
+        
+        # Login Button
+        self.login_button = tk.Button(root, text="Login", font=("Arial", 12), command=self.login)
+        self.login_button.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Add images for each recipe
+        self.recipe_images = {}
+        for recipe in recipes_db:
+            image_path = recipe["image_path"]
+            recipe_image = Image.open(image_path)
+            recipe_image = recipe_image.resize((100, 100), Image.ANTIALIAS)
+            self.recipe_images[recipe["name"]] = ImageTk.PhotoImage(recipe_image)
+
+    def register(self):
+        username = simpledialog.askstring("Register", "Enter username:")
+        password = simpledialog.askstring("Register", "Enter password:", show="*")
+        if username and password:
+            message = register_user(username, password) # type: ignore
+            messagebox.showinfo("Register", message)
+            if message == "User registered successfully.":
+                self.show_main_interface()
+
+    def login(self):
+        username = simpledialog.askstring("Login", "Enter username:")
+        password = simpledialog.askstring("Login", "Enter password:", show="*")
+        if username and password:
+            if authenticate_user(username, password): # type: ignore
+                messagebox.showinfo("Login", "Login successful.")
+                self.show_main_interface()
+            else:
+                messagebox.showerror("Login", "Invalid username or password.")
+
+    def show_main_interface(self):
+        # Remove register and login buttons
+        self.register_button.place_forget()
+        self.login_button.place_forget()
+
+        # Add additional buttons for main interface
+        # Example:
+        # self.input_ingredients_button = tk.Button(root, text="Input Ingredients", command=self.input_ingredients)
+        # self.input_ingredients_button.place(x=100, y=100)
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = RecipeFinderApp(root)
+    root.mainloop()
