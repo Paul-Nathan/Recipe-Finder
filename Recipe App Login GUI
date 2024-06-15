@@ -1,0 +1,118 @@
+import sqlite3, bcrypt
+from tkinter import messagebox
+
+#FUNCTIONALITY PART
+#Creating the database and tables
+conn=sqlite3.connect('USERS.db')
+cursor=conn.cursor()
+cursor.execute('CREATE TABLE IF NOT EXISTS USERS_INFO  (username TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL)')
+
+def set_entryFields():
+    usernameEntry.delete(0, END)
+    passwordEntry.delete(0, END)
+    emailEntry.delete(0, END)
+    usernameEntry.configure(placeholder_text='username')
+    passwordEntry.configure(placeholder_text='password', show='*')
+    emailEntry.configure(placeholder_text='email')
+    window.focus()
+
+
+def login_user():
+    if usernameEntry.get() == '' or passwordEntry.get() == '' or emailEntry.get() == '':
+        messagebox.showerror('error', 'All fields are required', parent=mainframe)
+    else:
+        cursor.execute('SELECT password FROM USERS_INFO WHERE username=?',[usernameEntry.get()])
+        result_password=cursor.fetchone()
+        if result_password:
+            if bcrypt.checkpw(passwordEntry.get().encode('UTF-8'),result_password[0]):
+                messagebox.showinfo('Success', 'Successfully Logged IN', parent=mainframe)
+                import profile
+            else:
+                messagebox.showerror('error', 'Invalid Password or Email', parent=mainframe)
+                passwordEntry.delete(0, END)
+        else:
+            messagebox.showerror('error', 'Invalid User Name', parent=mainframe)
+            usernameEntry.delete(0, END)
+            passwordEntry.delete(0, END)
+            emailEntry.delete(0, END)
+            window.focus()
+
+
+
+x =50
+def register_user():
+    if usernameEntry.get()=='' or passwordEntry.get()=='' or emailEntry.get()=='':
+        messagebox.showerror('error','All fields are required',parent=mainframe)
+    else:
+        cursor.execute('SELECT username FROM USERS_INFO WHERE username=?',[usernameEntry.get()])
+        if cursor.fetchone() is not None:
+            messagebox.showerror('error','Username already exist',parent=mainframe)
+
+        else:
+            encode_password = passwordEntry.get().encode('UTF-8')
+            hashed_password = bcrypt.hashpw(encode_password,bcrypt.gensalt())
+            cursor.execute('INSERT INTO USERS_INFO VALUES (?,?,?)',[usernameEntry.get(),hashed_password,emailEntry.get()])
+            conn.commit()
+            messagebox.showinfo('Success','Registration successful')
+
+def move_left():
+    global x
+    if x>50:
+        x-=1
+        topframe.place(x=x,y=10)
+        topframe.after(2,move_left)
+    headingLabel.configure(text='Sign Up')
+    innerButton.configure(text='Sign Up', command= register_user)
+    set_entryFields()
+
+
+def move_right():
+    global x
+    if x<370:
+        x+=1
+        topframe.place(x=x, y=10)
+        topframe.after(2,move_right)
+    headingLabel.configure(text='Login')
+    innerButton.configure(text='Login',command = login_user)
+    set_entryFields()
+
+
+
+#GUI PART
+window = CTk()
+window.title('LOGIN & SIGN UP PAGE')
+window.wm_geometry('+100+100')
+set_appearance_mode('light')
+mainframe = CTkFrame(window,fg_color='#06283D',width=600,height=400)
+mainframe.grid(row=0,column=0,padx=30,pady=30)
+loginButton = CTkButton(mainframe,text='Login',fg_color='blue2',corner_radius=32,font=('arial',10,'bold'),border_color='#fff',border_width=2, hover_color='#c36464',cursor='hand', command=move_right)
+loginButton.place(x=430,y=300)
+signupButton = CTkButton(mainframe,text='Sign Up',fg_color='blue2',corner_radius=32,font=('arial',10,'bold'),border_color='#fff',border_width=2,hover_color='#c36464',cursor='hand', command=move_left)
+signupButton.place(x=30,y=300)
+
+topframe = CTkFrame(window,fg_color='#c36464',width=350,height=400)
+topframe.place(x=50,y=10)
+logoimage = CTkImage(light_image=Image.open('profile.png'),size=(80,80))
+logoLabel = CTkLabel(topframe,image=logoimage,text='')
+logoLabel.grid(row=0,column=0,pady=(20,0))
+headingLabel = CTkLabel(topframe,text='Sign Up',font=('arial',30,'bold'),text_color='blue4')
+headingLabel.grid(row=1,column=0,pady=(20,0))
+usernameEntry = CTkEntry(topframe,font=('arial',10,'bold'),width=200,height=10,corner_radius=32,border_width=2,placeholder_text='username')
+usernameEntry.grid(row=2,column=0,padx=20,pady=(30,20))
+passwordEntry = CTkEntry(topframe,font=('arial',10,'bold'),width=200,height=10,corner_radius=32,border_width=2,placeholder_text='password',show='*')
+passwordEntry.grid(row=3,column=0,padx=20,pady=(0,20))
+emailEntry = CTkEntry(topframe,font=('arial',10,'bold'),width=200,height=10,corner_radius=32,border_width=2,placeholder_text='email')
+emailEntry.grid(row=4,column=0,padx=20,pady=(0,20))
+
+
+innerButton=CTkButton(topframe,text='Sign Up',fg_color='blue2',corner_radius=32,font=('arial',10,'bold'),hover_color='#06283D',border_width=2,cursor='hand',command=register_user)
+innerButton.grid(row=5,column=0,pady=30)
+
+tryLabel = CTkLabel(topframe,text='',font=('arial',20,'bold'),text_color='black')
+tryLabel.grid(row=6,column=0,pady=(0,20))
+
+
+
+
+
+window.mainloop()

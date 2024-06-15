@@ -1,0 +1,95 @@
+from tkinter import *
+from datetime import date
+from customtkinter import *
+import pathlib
+from openpyxl import Workbook
+#FUNCTIONALITY
+def Exit():
+    root.destroy()
+
+#GUI
+background="#06283D"
+framebg="#EDEDED"
+framefg="#06283D"
+root=Tk()
+root.title("RECIPE ACCOUNT PROFILE")
+root.geometry("800x600+0+0")
+root.config(bg=background)
+file=pathlib.Path('Recipe_data.xlsx')
+if file.exists():
+    pass
+else:
+    file=Workbook()
+    sheet=file.active
+    sheet['A1']="Recipe TYPE."
+    sheet['B1']="Recipe Name"
+    sheet['C1']="Ingredients"
+
+
+    file.save('Recipe_data.xlsx')
+
+#top
+Label(root, text="Email: mpondo.teddybryan@ictuniversity.edu.cm",width=2, height=2,bg="#f0687c", anchor='e').pack(side=TOP,fill=X)
+Label(root, text="RECIPE ACCOUNT PROFILE",width=10, height=2,bg="#c36464",fg='#fff',font='Arial 20 bold').pack(side=TOP,fill=X)
+
+#search box to update
+Search=StringVar ()
+Entry(root, textvariable=Search,width=13, bd=2,font="arial 15") .place (x=550,y=50)
+Srch=Button(root,text="Search",compound=LEFT,width=9,bg='#68ddfa',font="arial 15 bold")
+Srch.place(x=680,y=50)
+imageicon=PhotoImage(file="search-engine-optimization.png")
+Update_button=Button(root,image=imageicon,bg="#c36464")
+Update_button.place(x=5,y=50)
+
+#Registration and Date
+Label (root, text="Recipe Name: ",font="arial 13", fg=framebg, bg=background) .place (x=30, y=150)
+Label (root, text="Creation Date:", font="arial 13", fg=framebg, bg=background) .place (x=300, y=150)
+Registration=StringVar ()
+Date = StringVar ()
+reg_entry = Entry(root, textvariable=Registration,width=15,font="arial 10")
+reg_entry.place(x=120,y=150)
+
+#registration_no()
+today = date.today ()
+d1 = today.strftime ( "%d/%m/%Y")
+date_entry = Entry(root, textvariable=Date,width=15, font="arial 10")
+date_entry.place(x=420,y=150)
+Date.set(d1)
+
+#Recipe Details
+obj=LabelFrame(root,text="Recipe Details",font=20,bd=2,width=500,bg=framebg,fg=framefg,height=320,relief=GROOVE)
+obj.place(x=30,y=200)
+
+
+Label(obj, text="Recipe Type:", font="arial 13",bg=framebg,fg=framefg).place(x=30,y=50)
+Label (obj, text="Ingredients:",font="arial 13", bg=framebg, fg=framefg) .place (x=30,y=100)
+
+
+recipe=StringVar()
+recipe_entry = Entry (obj, textvariable=recipe,width=20, font="arial 10")
+recipe_entry.place(x=160,y=50)
+ingredients=StringVar()
+ingredients_entry=Text(obj,height=15, width=50,font="arial 10",bd=5)
+ingredients_entry.place(x=160,y=100)
+
+#image
+f=Frame(root,bd=3,bg="black",width=120,height=120,background='#06283D',relief=GROOVE)
+f.place(x=630,y=120)
+
+img=PhotoImage(file="burger.png")
+lbl=Label(f,bg="#06283D",image=img)
+lbl.place(x=0,y=0)
+
+#Buttons
+Button (root,text="Upload",width=19, height=2,font="arial 12 bold",bg="lightblue").place(x=600,y=280)
+saveButton= Button (root,text="Save",width=19, height=2, font="arial 12 bold", bg="lightgreen")
+saveButton.place (x=600, y=380)
+Button(root,text="Reset",width=19, height=2,font="arial 12 bold",bg="lightpink").place(x=600,y=430)
+Button(root,text="Exit",width=19,height=2, font="arial 12 bold",bg="grey",command=Exit).place (x=600,y=480)
+
+
+
+
+
+
+root.mainloop()
